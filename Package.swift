@@ -23,6 +23,6 @@ let package = Package(
             dependencies: []),
         .testTarget(
             name: "parserTests",
-            dependencies: ["parser"]),
+            dependencies: ["Parser"]),
     ]
 )
