@@ -8,10 +8,10 @@
 import Foundation
 
 class NFA {
-    var fsm: FiniteStateMachine
+//    var fsm: FiniteStateMachine
     
     init() {
-        fsm = FiniteStateMachine()
+//        fsm = FiniteStateMachine()
     }
     
     func compileGrammar() {

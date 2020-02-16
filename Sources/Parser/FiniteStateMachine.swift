@@ -7,34 +7,30 @@
 
 import Foundation
 
+
+
 class State {
-    var id: String
     var name: String
     var transitions: [String: State]
-    init(id: String, name: String) {
-        self.id = id
+    init(name: String) {
         self.name = name
         self.transitions = [:]
     }
 }
 
-struct Transition {
-    let from: String
-    let to: String
-    let match: Character
-
-}
-
-
-class FiniteStateMachine {
+public class FiniteStateMachine {
     var states: [String: State]
     
-    
-//    var transitions: [Transition]
-
-    
-    init() {
+    public init(def: FiniteStateMachineDefinition) {
         states = [:]
+        
+        for vertex in def.vertices {
+            addState(name: vertex)
+        }
+        
+        for edge in def.edges {
+            addTransition(edge: edge)
+        }
         
         
 //        states = [
@@ -69,14 +65,15 @@ class FiniteStateMachine {
 //        currentState = states["start"]!
     }
     
-    func addState(id: String, name: String) {
-        var s = State(id: id, name: name)
-        states[id] = s
+    func addState(name: String) {
+        states[name] = State(name: name)
     }
     
-    func addTransition(id: String, transition: Transition) {
-        states[id]?.transitions[transition.]
-        
+    func addTransition(edge: Edge) {
+        if states[edge.from] != nil && states[edge.to] != nil  {
+            states[edge.from]?.transitions[edge.rule] = states[edge.to]
+        }
+        // TODO: Add error handling for state not found
     }
     
     func next(input: String) -> String? {
