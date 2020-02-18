@@ -16,6 +16,7 @@ struct Edge: Codable {
     var from: String
     var to: String
     var rule: String
+    var token: String?
 }
 
 //extension Edge {

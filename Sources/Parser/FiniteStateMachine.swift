@@ -7,22 +7,36 @@
 
 import Foundation
 
-
+struct Token {
+    let value: String
+}
 
 class State {
     var name: String
     var transitions: [String: State]
+    var tokens: [String: Token]
     init(name: String) {
         self.name = name
         self.transitions = [:]
+        self.tokens = [:]
     }
 }
 
 public class FiniteStateMachine {
     var states: [String: State]
+    var currentState: State
     
     public init(def: FiniteStateMachineDefinition) {
-        states = [:]
+        
+        // START and END are reserved keywords indicating the start and end states for a FSM.
+        // START and END are both necessary states for an FSM to function properly and are created in
+        // a static fashion. This is also necessary to keep currentState from having to be an optional
+        // which would require unwrapping in a slightly less elegant way.
+        let start = State(name: "START")
+        let end = State(name: "END")
+        
+        states = ["START": start, "END": end]
+        currentState = start
         
         for vertex in def.vertices {
             addState(name: vertex)
@@ -31,38 +45,7 @@ public class FiniteStateMachine {
         for edge in def.edges {
             addTransition(edge: edge)
         }
-        
-        
-//        states = [
-//            "start": Vertex(name: "start", token: "", hasRegex: false),
-//            "whitespace": Vertex(name: "whitespace", token: "WHITESPACE", hasRegex: false),
-//            "left_brace": Vertex(name: "left_brace", token: "LEFT_BRACE", hasRegex: false),
-//            "right_brace": Vertex(name: "right_brace", token: "RIGHT_BRACE", hasRegex: false),
-//            "colon": Vertex(name: "colon", token: "COLON", hasRegex: false),
-//            "line_feed": Vertex(name: "line_feed", token: "LINE_FEED", hasRegex: false),
-//            "carriage_return": Vertex(name: "carriage_return", token: "CARRIAGE_RETURN", hasRegex: false),
-//            "tab": Vertex(name: "tab", token: "TAB", hasRegex: false),
-//            "string": Vertex(name: "string", token: "STRING", hasRegex: true)
-//        ]
-//
-//        transitions = [
-//            Transition(from: "start", to: "whitespace", condition: " ", type: "exact"),
-//            Transition(from: "whitespace", to: "whitespace", condition: " ", type: "exact"),
-//            Transition(from: "start", to: "left_brace", condition: "{", type: "exact"),
-//            Transition(from: "start", to: "right_brace", condition: "}", type: "exact"),
-//            Transition(from: "start", to: "colon", condition: ":", type: "exact"),
-//            Transition(from: "start", to: "line_feed", condition: "\n", type: "exact"),
-//            Transition(from: "start", to: "carriage_return", condition: "\r", type: "exact"),
-//            Transition(from: "start", to: "tab", condition: "\t", type: "exact"),
-//            Transition(from: "start", to: "string", condition: "\"", type: "exact"),
-//            Transition(from: "string", to: "string", condition: "[^\"\\]", type: "regex"),
-//        ]
-//
-//        for transition in transitions {
-//            states[transition.from]?.transitions[transition.condition] = states[transition.to]
-//        }
-//
-//        currentState = states["start"]!
+
     }
     
     func addState(name: String) {
@@ -76,23 +59,28 @@ public class FiniteStateMachine {
         // TODO: Add error handling for state not found
     }
     
-    func next(input: String) -> String? {
-
-//        if let nextState = currentState.transitions[input] {
-//            currentState = nextState
-//            return nil
-//        } else {
-////            for rule in currentState.transitions {
-////                if rule.
-////            }
-//
-//
-//            let token = currentState.token
-//            currentState = states["start"]!
-//
-//            return token
-//        }
-        return ""
+    func next(input: String) -> Token? {
+        let previousState = currentState
+        
+        
+        // TODO: Refactor this to be more "elegant". Ideally, this will get simplified when NFA/DFA logic is implemented.
+        if let nextState = currentState.transitions[input] {
+            currentState = nextState
+            if currentState.name == "END" {
+                return previousState.tokens[input]
+            }
+        } else {
+            if let notState = currentState.transitions["^"] {
+                currentState = notState
+                if currentState.name == "END" {
+                    return previousState.tokens["^"]
+                }
+            } else {
+                return Token(value: "UNRECOGNIZED")
+            }
+        }
+        
+        return nil
     }
 }
 
