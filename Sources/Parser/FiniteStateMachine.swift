@@ -7,9 +7,7 @@
 
 import Foundation
 
-struct Token {
-    let value: String
-}
+
 
 class State {
     var name: String
