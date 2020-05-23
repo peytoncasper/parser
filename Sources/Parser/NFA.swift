@@ -8,13 +8,25 @@
 import Foundation
 
 class NFA {
-//    var fsm: FiniteStateMachine
+//    var nfa: FiniteStateMachine
     
     init() {
 //        fsm = FiniteStateMachine()
     }
     
-    func compileGrammar() {
+    func convertFSMToNFA(fsm: FiniteStateMachine) {
         
+        guard let start = fsm.states["START"] else {
+            return
+        }
+        
+        expandExpression(state: start)
+
+    }
+    
+    func expandExpression(state: State) {
+//        for state in state.transitions {
+//            if state.key
+//        }
     }
 }

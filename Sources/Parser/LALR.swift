@@ -8,7 +8,13 @@
 import Foundation
 
 public class LALR {
+//    var lexer: Lexer
+//    var dfa: DeterministicFiniteStateAutomaton
     
+    public init(fsmDefinition: FiniteStateMachineDefinition) {
+//        _ = FiniteStateMachine(def: fsmDefinition)
+        
+    }
 }
 //public struct Parser {
 //    let fsm: FiniteStateMachine
